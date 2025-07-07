@@ -17,7 +17,7 @@ this project are required as dependencies. This guide provides some general reco
 
 Other useful readings:
 * [Repository Structure](../../docs/documentation.md#repository-structure)
-* [Reusable Software](../../Readme.md#reusable-software).
+* [Reusable Software](../../README.md#reusable-software).
 
 ## Guidelines
 

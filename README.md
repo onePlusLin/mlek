@@ -1,3 +1,6 @@
+> ## This project has moved to a new location:
+> ## https://gitlab.arm.com/artificial-intelligence/ethos-u/ml-embedded-evaluation-kit
+> ## This repository is now deprecated and will be removed in the future.
 
 # Arm® ML embedded evaluation kit
 
