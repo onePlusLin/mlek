@@ -30,7 +30,7 @@
 
 #if (ETHOS_U_NPU_MEMORY_MODE==ETHOS_U_NPU_MEMORY_MODE_DEDICATED_SRAM)
     #ifndef ETHOS_U_NPU_CACHE_SIZE
-        #define ETHOS_U_CACHE_BUF_SZ                (393216U)  /* See vela doc for reference */
+        #define ETHOS_U_CACHE_BUF_SZ                (2097152U)  /* See vela doc for reference */
     #else
         #define ETHOS_U_CACHE_BUF_SZ                ETHOS_U_NPU_CACHE_SIZE
     #endif /* ETHOS_U_NPU_CACHE_SIZE */

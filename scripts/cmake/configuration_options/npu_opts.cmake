@@ -63,7 +63,7 @@ else()
 endif()
 
 if(DEFAULT_NPU_MEM_MODE STREQUAL "Dedicated_Sram")
-    set(DEFAULT_NPU_CACHE_SIZE  "393216")
+    set(DEFAULT_NPU_CACHE_SIZE  "2097152")
     USER_OPTION(ETHOS_U_NPU_CACHE_SIZE "Arm Ethos-U NPU Cache Size"
             "${DEFAULT_NPU_CACHE_SIZE}"
             STRING)

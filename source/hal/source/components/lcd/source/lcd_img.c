@@ -41,6 +41,7 @@ int lcd_init(void)
     return show_title();
 }
 
+// 将图片显示在lcd上面
 int lcd_display_image(const uint8_t* data, const uint32_t width,
     const uint32_t height, const uint32_t channels,
     const uint32_t pos_x, const uint32_t pos_y,

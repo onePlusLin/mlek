@@ -78,7 +78,7 @@ namespace app {
 
         /* Cache is only usable if we have more than 1 inference to do and it's not the first inference. */
         bool useCache = inferenceIndex > 0 && this->m_numReusedMfccVectors > 0;
-
+        int i = 0;
         /* Use a sliding window to calculate MFCC features frame by frame. */
         while (this->m_mfccSlidingWindow.HasNext()) {
             const int16_t* mfccWindow = this->m_mfccSlidingWindow.Next();
@@ -89,6 +89,7 @@ namespace app {
             /* Compute features for this window and write them to input tensor. */
             this->m_mfccFeatureCalculator(mfccFrameAudioData, this->m_mfccSlidingWindow.Index(),
                                           useCache, this->m_numMfccVectorsInAudioStride);
+            info("DoPreProcess %d \n", i++);
         }
 
         debug("Input tensor populated \n");

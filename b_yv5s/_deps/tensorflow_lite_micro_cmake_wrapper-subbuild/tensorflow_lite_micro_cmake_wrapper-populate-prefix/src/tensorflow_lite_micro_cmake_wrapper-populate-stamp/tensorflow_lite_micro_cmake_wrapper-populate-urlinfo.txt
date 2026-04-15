@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=/home/linzejia/app/cmake/bin/cmake;-P;/home/linzejia/app/mlek_lee/b_yv5s/_deps/tensorflow_lite_micro_cmake_wrapper-subbuild/tensorflow_lite_micro_cmake_wrapper-populate-prefix/src/tensorflow_lite_micro_cmake_wrapper-populate-stamp/download-tensorflow_lite_micro_cmake_wrapper-populate.cmake;COMMAND;/home/linzejia/app/cmake/bin/cmake;-P;/home/linzejia/app/mlek_lee/b_yv5s/_deps/tensorflow_lite_micro_cmake_wrapper-subbuild/tensorflow_lite_micro_cmake_wrapper-populate-prefix/src/tensorflow_lite_micro_cmake_wrapper-populate-stamp/verify-tensorflow_lite_micro_cmake_wrapper-populate.cmake
+source_dir=/home/linzejia/app/mlek_lee/b_yv5s/_deps/tensorflow_lite_micro_cmake_wrapper-src
+work_dir=/home/linzejia/app/mlek_lee/b_yv5s/_deps
+url(s)=https://gitlab.arm.com/artificial-intelligence/ethos-u/ethos-u-core-software/-/raw/25.02/tflite_micro.cmake?ref_type=tags&inline=false
+hash=MD5=7ee273b9d993d8552f7d1fc129f276fd
+no_extract=YES
+

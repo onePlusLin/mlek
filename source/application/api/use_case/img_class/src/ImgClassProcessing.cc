@@ -18,6 +18,7 @@
 
 #include "ImageUtils.hpp"
 #include "log_macros.h"
+#include "save_to_file.hpp"
 
 namespace arm {
 namespace app {
@@ -56,7 +57,8 @@ namespace app {
     {}
 
     bool ImgClassPostProcess::DoPostProcess()
-    {
+    { 
+        this->m_imgClassifier.GetYolov5sResults(this->m_outputTensor, "img_class.txt");
         return this->m_imgClassifier.GetClassificationResults(
                 this->m_outputTensor, this->m_results,
                 this->m_labels, 5, false);

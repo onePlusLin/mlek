@@ -45,6 +45,7 @@ target_sources(${COMMON_UC_UTILS_TARGET}
     source/Mfcc.cc
     source/Model.cc
     source/TensorFlowLiteMicro.cc)
+    #source/save_to_file.cc)
 
 # Link time library targets:
 target_link_libraries(${COMMON_UC_UTILS_TARGET}

@@ -21,7 +21,7 @@ __HEAP_SIZE  = 0x000C0000;
 /* System memory brief */
 MEMORY
 {
-  ITCM  (rx)  : ORIGIN = 0x00000000, LENGTH = 0x00080000
+  ITCM  (rx)  : ORIGIN = 0x00000000, LENGTH = 0x00090000
   DTCM  (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00080000
   BRAM  (rwx) : ORIGIN = 0x11000000, LENGTH = 0x00100000
   SRAM  (rwx) : ORIGIN = 0x31000000, LENGTH = 0x00200000
@@ -78,7 +78,7 @@ SECTIONS
      * This code is instead placed on BRAM. See comment in the BRAM
      * section for details.
      */
-    *(EXCLUDE_FILE(*hal.c.obj
+     *(EXCLUDE_FILE(*hal.c.obj
                    *_allocator*.o*
                    *flatbuffer*.o*
                    *lcd*.obj
@@ -211,7 +211,7 @@ SECTIONS
   __etext = ALIGN (4);
 
   .bram.at_ddr :  AT (__etext)
-  {
+  {  
     __data_start__ = .;
     *(vtable)
     *(.data)

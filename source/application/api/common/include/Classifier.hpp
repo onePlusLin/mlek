@@ -54,6 +54,10 @@ namespace app {
             const std::vector <std::string>& labels, uint32_t topNCount,
             bool use_softmax);
 
+        virtual bool GetYolov5sResults(
+            TfLiteTensor* outputTensor,
+            const std::string& filename);
+
         /**
         * @brief       Populate the elements of the Classification Result object.
         * @param[in]   topNSet        Ordered set of top 5 output class scores and labels.

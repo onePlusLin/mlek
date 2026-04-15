@@ -74,7 +74,7 @@ valid_npu_configs = NpuConfigs.create(
             macs=macs,
             processor_id="U65",
             prefix_id="Y",
-            memory_mode="Dedicated_Sram",
+            memory_mode="Dedicated_Sram_2048KB",
             system_config="Ethos_U65_High_End"
         ) for macs in (256, 512)
     ),
@@ -92,8 +92,8 @@ valid_npu_configs = NpuConfigs.create(
 
 # Default NPU configurations (these are always run when the models are optimised)
 default_npu_configs = NpuConfigs.create(
+    valid_npu_configs.get("ethos-u65", 512),
     valid_npu_configs.get("ethos-u55", 128),
-    valid_npu_configs.get("ethos-u65", 256),
     valid_npu_configs.get("ethos-u85", 256),
 )
 
