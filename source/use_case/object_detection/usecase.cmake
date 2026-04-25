@@ -39,6 +39,7 @@ USER_OPTION(${use_case}_CHANNELS_IMAGE_DISPLAYED "Channels' image displayed on t
 # Generate input files
 generate_images_code("${${use_case}_FILE_PATH}"
                      ${SAMPLES_GEN_DIR}
+                     "${${use_case}_IMAGE_SIZE}"
                      "${${use_case}_IMAGE_SIZE}")
 
 USER_OPTION(${use_case}_ACTIVATION_BUF_SZ "Activation buffer size for the chosen model"

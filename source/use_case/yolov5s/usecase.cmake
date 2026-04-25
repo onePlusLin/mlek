@@ -20,7 +20,12 @@ list(APPEND ${use_case}_API_LIST "yolov5s")
 
 set_input_file_path_user_option(".bmp" ${use_case})
 
-USER_OPTION(${use_case}_IMAGE_SIZE "Square image size in pixels. Images will be resized to this size."
+# 定义图像的高度
+USER_OPTION(${use_case}_IMAGE_HEIGHT "Image height in pixels. Images will be resized to this height."
+    640
+    STRING)
+# 定义图像的宽度
+USER_OPTION(${use_case}_IMAGE_WIDTH "Image width in pixels. Images will be resized to this width."
     640
     STRING)
 
@@ -31,7 +36,8 @@ USER_OPTION(${use_case}_LABELS_TXT_FILE "Labels' txt file for the chosen model"
 # Generate input files
 generate_images_code("${${use_case}_FILE_PATH}"
                      ${SAMPLES_GEN_DIR}
-                     "${${use_case}_IMAGE_SIZE}")
+                     "${${use_case}_IMAGE_HEIGHT}"
+                     "${${use_case}_IMAGE_WIDTH}")
 
 # Generate labels file
 set(${use_case}_LABELS_CPP_FILE Labels)

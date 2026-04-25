@@ -14,6 +14,9 @@ CMakeFiles
 CMakeUserPresets.json
 build*/
 cmake-build-*/
+b_v*/
+b_y*/
+build*/
 
 # Virtual environments
 scripts/py/env*
@@ -21,3 +24,6 @@ scripts/py/venv*
 env
 venv
 __pycache__*
+
+# download file
+downloads/

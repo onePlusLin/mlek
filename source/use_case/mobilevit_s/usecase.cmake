@@ -31,6 +31,7 @@ USER_OPTION(${use_case}_LABELS_TXT_FILE "Labels' txt file for the chosen model"
 # Generate input files
 generate_images_code("${${use_case}_FILE_PATH}"
                      ${SAMPLES_GEN_DIR}
+                     "${${use_case}_IMAGE_SIZE}"
                      "${${use_case}_IMAGE_SIZE}")
 
 # Generate labels file

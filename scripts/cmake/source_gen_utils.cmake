@@ -43,6 +43,32 @@ function(generate_images_code input_dir gen_dir img_size)
 
 endfunction()
 
+
+##############################################################################
+# Using for yolo* Model image
+# This function generates C++ files for images located in the directory it is
+# pointed at. NOTE: uses python
+##############################################################################
+function(generate_yolo_images_code input_dir gen_dir img_height img_width )
+
+    # Absolute paths for passing into python script
+    get_filename_component(input_dir_abs ${input_dir} ABSOLUTE)
+    get_filename_component(gen_out_abs ${gen_dir} ABSOLUTE)
+
+    message(STATUS "Generating image files from ${input_dir_abs}")
+    execute_process(
+        COMMAND ${PYTHON} ${MLEK_SCRIPTS_DIR}/py/gen_img_cpp_yolo.py
+        --image_path ${input_dir_abs}
+        --package_gen_dir ${gen_out_abs}
+        --image_size ${img_height} ${img_width}
+        RESULT_VARIABLE return_code
+    )
+    if (NOT return_code EQUAL "0")
+        message(FATAL_ERROR "Failed to generate image files.")
+    endif ()
+
+endfunction()
+
 ##############################################################################
 # This function generates C++ files for audio files located in the directory it is
 # pointed at. NOTE: uses python

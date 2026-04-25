@@ -33,7 +33,8 @@ add_library(${HAL_TARGET} STATIC)
 ## Common include directories - public
 target_include_directories(${HAL_TARGET}
     PUBLIC
-    include)
+    include
+    source/components/camera/source)
 
 ## Common sources for all profiles
 target_sources(${HAL_TARGET}

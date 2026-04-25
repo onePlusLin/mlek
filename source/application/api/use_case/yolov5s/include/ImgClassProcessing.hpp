@@ -21,71 +21,81 @@
 #include "Classifier.hpp"
 
 namespace arm {
-namespace app {
-
-    /**
-     * @brief   Pre-processing class for Image Classification use case.
-     *          Implements methods declared by BasePreProcess and anything else needed
-     *          to populate input tensors ready for inference.
-     */
-    class ImgClassPreProcess : public BasePreProcess {
-
-    public:
-        /**
-         * @brief       Constructor
-         * @param[in]   inputTensor     Pointer to the TFLite Micro input Tensor.
-         * @param[in]   convertToInt8   Should the image be converted to Int8 range.
-         **/
-        explicit ImgClassPreProcess(TfLiteTensor* inputTensor, bool convertToInt8);
+    namespace app {
 
         /**
-         * @brief       Should perform pre-processing of 'raw' input image data and load it into
-         *              TFLite Micro input tensors ready for inference
-         * @param[in]   input      Pointer to the data that pre-processing will work on.
-         * @param[in]   inputSize  Size of the input data.
-         * @return      true if successful, false otherwise.
-         **/
-        bool DoPreProcess(const void* input, size_t inputSize) override;
+         * @brief   Pre-processing class for Image Classification use case.
+         *          Implements methods declared by BasePreProcess and anything else needed
+         *          to populate input tensors ready for inference.
+         */
+        class ImgClassPreProcess : public BasePreProcess {
 
-    private:
-        TfLiteTensor* m_inputTensor;
-        bool m_convertToInt8;
-    };
+            public:
+            /**
+             * @brief       Constructor
+             * @param[in]   inputTensor     Pointer to the TFLite Micro input Tensor.
+             * @param[in]   convertToInt8   Should the image be converted to Int8 range.
+             **/
+            explicit ImgClassPreProcess(TfLiteTensor* inputTensor, bool convertToInt8);
 
-    /**
-     * @brief   Post-processing class for Image Classification use case.
-     *          Implements methods declared by BasePostProcess and anything else needed
-     *          to populate result vector.
-     */
-    class ImgClassPostProcess : public BasePostProcess {
+            /**
+             * @brief       Should perform pre-processing of 'raw' input image data and load it into
+             *              TFLite Micro input tensors ready for inference
+             * @param[in]   input      Pointer to the data that pre-processing will work on.
+             * @param[in]   inputSize  Size of the input data.
+             * @return      true if successful, false otherwise.
+             **/
+            bool DoPreProcess(const void* input, size_t inputSize) override;
 
-    public:
-        /**
-         * @brief       Constructor
-         * @param[in]   outputTensor  Pointer to the TFLite Micro output Tensor.
-         * @param[in]   classifier    Classifier object used to get top N results from classification.
-         * @param[in]   labels        Vector of string labels to identify each output of the model.
-         * @param[in]   results       Vector of classification results to store decoded outputs.
-         **/
-        ImgClassPostProcess(TfLiteTensor* outputTensor, Classifier& classifier,
-                            const std::vector<std::string>& labels,
-                            std::vector<ClassificationResult>& results);
+            private:
+            TfLiteTensor* m_inputTensor;
+            bool m_convertToInt8;
+        };
 
         /**
-         * @brief       Should perform post-processing of the result of inference then
-         *              populate classification result data for any later use.
-         * @return      true if successful, false otherwise.
-         **/
-        bool DoPostProcess() override;
+         * @brief   Post-processing class for Image Classification use case.
+         *          Implements methods declared by BasePostProcess and anything else needed
+         *          to populate result vector.
+         */
+        class ImgClassPostProcess : public BasePostProcess {
 
-    private:
-        TfLiteTensor* m_outputTensor;
-        Classifier& m_imgClassifier;
-        const std::vector<std::string>& m_labels;
-        std::vector<ClassificationResult>& m_results;
-    };
+            public:
+            /**
+             * @brief       Constructor
+             * @param[in]   outputTensor  Pointer to the TFLite Micro output Tensor.
+             * @param[in]   classifier    Classifier object used to get top N results from classification.
+             * @param[in]   labels        Vector of string labels to identify each output of the model.
+             * @param[in]   results       Vector of classification results to store decoded outputs.
+             * @param[in]   m_ratio
+             * @param[in]   m_pad_w
+             * @param[in]   m_pad_h
+             **/
+            ImgClassPostProcess(TfLiteTensor* outputTensor, Classifier& classifier,
+                const std::vector<std::string>& labels,
+                std::vector<ClassificationResult>& results);
 
-} /* namespace app */
+            float m_ratio;
+            uint16_t m_pad_w;
+            uint16_t m_pad_h;
+
+
+
+            /**
+             * @brief       Should perform post-processing of the result of inference then
+             *              populate classification result data for any later use.
+             * @return      true if successful, false otherwise.
+             **/
+            bool DoPostProcess() override;
+
+            private:
+            TfLiteTensor* m_outputTensor;
+            Classifier& m_imgClassifier;
+            const std::vector<std::string>& m_labels;
+            std::vector<ClassificationResult>& m_results;
+
+        };
+
+    } /* namespace app */
 } /* namespace arm */
 
 #endif /* IMG_CLASS_PROCESSING_HPP */

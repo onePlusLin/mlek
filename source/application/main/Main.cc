@@ -16,9 +16,9 @@
  * limitations under the License.
  */
 
-/****************************************************************************\
- *               Main application file for ARM NPU on MPS3 board             *
-\****************************************************************************/
+ /****************************************************************************\
+  *               Main application file for ARM NPU on MPS3 board             *
+ \****************************************************************************/
 
 #include "hal.h"                    /* our hardware abstraction api */
 #include "log_macros.h"
@@ -39,11 +39,14 @@ static void PrintApplicationIntro()
     info("Version %s Build date: " __DATE__ " @ " __TIME__ "\n", PRJ_VER_STR);
     info("Compiler: %s\n", PRJ_COMPILER);
     info("Copyright 2021-2025 Arm Limited and/or "
-         "its affiliates <open-source-office@arm.com>\n\n");
+        "its affiliates <open-source-office@arm.com>\n\n");
 }
 
-int main ()
+int main()
 {
+    // 开启 MemManage/BusFault/UsageFault 中断（让 CFSR 记录详细错误）
+    // SCB->SHCSR |= SCB_SHCSR_MEMFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_USGFAULTENA_Msk;
+
     if (hal_platform_init()) {
         /* Application information, UART should have been initialised. */
         PrintApplicationIntro();

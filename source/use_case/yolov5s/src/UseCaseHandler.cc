@@ -26,12 +26,12 @@ namespace arm {
             auto& profiler = ctx.Get<Profiler&>("profiler");
             auto& model = ctx.Get<Model&>("model");
 
-            constexpr uint32_t dataPsnImgDownscaleFactor = 2;//？
-            constexpr uint32_t dataPsnImgStartX = 10;//？
-            constexpr uint32_t dataPsnImgStartY = 35;//？
+            constexpr uint32_t dataPsnImgDownscaleFactor = 3;// 图片显示缩放到lcd上面倍数
+            constexpr uint32_t dataPsnImgStartX = 10;
+            constexpr uint32_t dataPsnImgStartY = 35;
 
-            constexpr uint32_t dataPsnTxtInfStartX = 150;//？
-            constexpr uint32_t dataPsnTxtInfStartY = 40;//？
+            constexpr uint32_t dataPsnTxtInfStartX = 150;
+            constexpr uint32_t dataPsnTxtInfStartY = 40;
 
             if (!model.IsInited()) {
                 printf_err("Model is not initialised! Terminating processing.\n");
@@ -67,7 +67,7 @@ namespace arm {
                     ctx.Get<std::vector<std::string>&>("labels"),
                     results);
             hal_camera_init();
-            auto bCamera = hal_camera_configure(//？lcd_display_image不能显示
+            auto bCamera = hal_camera_configure(
                 nCols,
                 nRows,
                 HAL_CAMERA_MODE_SINGLE_FRAME,
@@ -89,7 +89,9 @@ namespace arm {
                 std::string str_inf{ "Running inference... " };
 
                 uint32_t capturedFrameSize = 0;
-                const uint8_t* imgSrc = hal_camera_get_captured_frame(&capturedFrameSize);//？获取捕获的帧
+                static uint32_t frame_idx = 0;
+                // 获取图片数据
+                const uint8_t* imgSrc = hal_camera_get_captured_frame(&capturedFrameSize);// 获取输入图片   
                 if (!imgSrc || !capturedFrameSize) {
                     break;
                 }
@@ -106,12 +108,19 @@ namespace arm {
                 /* Display message on the LCD - inference running. */
                 hal_lcd_display_text(
                     str_inf.c_str(), str_inf.size(), dataPsnTxtInfStartX, dataPsnTxtInfStartY, false);
-
+                info("capturedFrameSize %d.\n", capturedFrameSize);
+                info("inputTensor->bytes %d.\n", inputTensor->bytes);
+                info("There should be equal.\n");
                 const size_t imgSz =
                     inputTensor->bytes < capturedFrameSize ? inputTensor->bytes : capturedFrameSize;// 图片大小
 
+                postProcess.m_ratio = get_sample_img_ratio(frame_idx);
+                postProcess.m_pad_w = get_sample_img_pad_w(frame_idx);
+                postProcess.m_pad_h = get_sample_img_pad_h(frame_idx);
+
+
                 /* Run the pre-processing, inference and post-processing. */
-                // 获取输入到->m_inputTensor和是否转为int8
+                // 获取输入到->m_inputTensor和是否转为int8，这里应该进行归一化和量化8 bit，预处理
                 if (!preProcess.DoPreProcess(imgSrc, imgSz)) {
                     printf_err("Pre-processing failed.");
                     return false;

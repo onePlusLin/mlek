@@ -75,10 +75,11 @@ bool hal_camera_init(void)
     return true;
 }
 
-bool hal_camera_configure(const uint32_t width,
-                          const uint32_t height,
-                          const hal_cam_mode mode,
-                          const hal_cam_clr_format colour_format)
+// 相机配置时就完成resize：
+bool hal_camera_configure(const uint32_t width,  // 直接使用传入的尺寸
+    const uint32_t height,
+    const hal_cam_mode mode,
+    const hal_cam_clr_format colour_format)
 {
     uint32_t vsi_driver_colour_format = VIDEO_DRV_COLOR_FORMAT_BEGIN;
 
@@ -114,10 +115,10 @@ bool hal_camera_configure(const uint32_t width,
     }
 
     if (VideoDrv_Configure(VIDEO_DRV_IN0,
-                           width,
-                           height,
-                           vsi_driver_colour_format,
-                           24U /* frame rate */) != VIDEO_DRV_OK) {
+        width,
+        height,
+        vsi_driver_colour_format,
+        24U /* frame rate */) != VIDEO_DRV_OK) {
         printf_err("Failed to configure video input\n");
         hal_camera_reset();
         return false;
@@ -128,7 +129,7 @@ bool hal_camera_configure(const uint32_t width,
         return false;
     }
 
-    hal_camera_set_buffer((uint8_t *)(DYNAMIC_IFM_BASE), s_vsi_dev.bytes_per_frame);
+    hal_camera_set_buffer((uint8_t*)(DYNAMIC_IFM_BASE), s_vsi_dev.bytes_per_frame);
     info("Camera configured\n");
     return true;
 }
@@ -141,7 +142,7 @@ bool hal_camera_set_buffer(uint8_t* buffer, const uint32_t size)
     }
 
     /* Set Input Video buffer */
-    if (VideoDrv_SetBuf(VIDEO_DRV_IN0,  buffer, size) != VIDEO_DRV_OK) {
+    if (VideoDrv_SetBuf(VIDEO_DRV_IN0, buffer, size) != VIDEO_DRV_OK) {
         printf_err("Failed to set buffer for video input\n");
         return false;
     }

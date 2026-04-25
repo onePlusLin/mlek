@@ -18,6 +18,7 @@
 
 #include "ImageUtils.hpp"
 #include "log_macros.h"
+#include <algorithm>
 extern void yolo_post_process(uint8_t* input_data, const std::vector <std::string>& labels);
 
 namespace arm {
@@ -39,11 +40,33 @@ namespace arm {
             auto input = static_cast<const uint8_t*>(data);
 
             std::memcpy(this->m_inputTensor->data.data, input, inputSize);
+
+            // 归一化、量化
+            QuantParams quantParams = GetTensorQuantParams(this->m_inputTensor);
+            info("Input tensor quantization: scale=%f, zero_point=%d\n",
+                quantParams.scale, quantParams.offset);
+
+            uint8_t* input_data = (uint8_t*)this->m_inputTensor->data.data;
+            for (size_t i = 0; i < inputSize; ++i) {
+                // 归一化到 0.0-1.0
+                float normalized = static_cast<float>(input[i]) / 255.0f;
+
+                // 量化为 int8
+                int32_t quantized = static_cast<int32_t>(
+                    round(normalized / quantParams.scale) + quantParams.offset);
+
+                // 裁剪到 int8 范围
+                quantized = std::max(static_cast<int32_t>(-128),
+                    std::min(static_cast<int32_t>(127), quantized));
+
+                input_data[i] = static_cast<int8_t>(quantized);
+            }
+
             debug("Input tensor populated \n");
 
-            if (this->m_convertToInt8) {
-                image::ConvertImgToInt8(this->m_inputTensor->data.data, this->m_inputTensor->bytes);
-            }
+            // if (this->m_convertToInt8) {
+            //     image::ConvertImgToInt8(this->m_inputTensor->data.data, this->m_inputTensor->bytes);
+            // }
 
             return true;
         }

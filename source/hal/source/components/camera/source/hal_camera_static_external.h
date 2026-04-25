@@ -20,6 +20,10 @@
 
 #include <stdint.h>
 
+#if defined(__cplusplus)
+extern "C" {
+#endif /* defined(__cplusplus) */
+
 /** These functions must be provided to this interface */
 
 /**
@@ -60,5 +64,9 @@ uint32_t get_sample_img_width(void);
  * @return      Image height.
  **/
 uint32_t get_sample_img_height(void);
+
+#if defined(__cplusplus)
+}
+#endif /* defined(__cplusplus) */
 
 #endif /* HAL_CAMERA_STATIC_EXTERNAL_H */

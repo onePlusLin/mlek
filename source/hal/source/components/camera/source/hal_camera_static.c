@@ -55,9 +55,9 @@ bool hal_camera_init(void)
 }
 
 bool hal_camera_configure(const uint32_t width,
-                          const uint32_t height,
-                          const hal_cam_mode mode,
-                          const hal_cam_clr_format colour_format)
+    const uint32_t height,
+    const hal_cam_mode mode,
+    const hal_cam_clr_format colour_format)
 {
     if (width != get_sample_img_width() || height != get_sample_img_height()) {
         printf_err("Unsupported camera configuration %d %d %d %D\n", width, get_sample_img_width(), height, get_sample_img_height());

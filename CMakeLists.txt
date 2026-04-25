@@ -161,6 +161,11 @@ foreach(use_case ${USE_CASES})
         "${SRC_GEN_DIR}/*.cpp"
         "${SRC_GEN_DIR}/*.c")
 
+    file(GLOB_RECURSE SRC_SAMPLES
+            "${SAMPLES_GEN_DIR}/*.cc"
+            "${SAMPLES_GEN_DIR}/*.cpp"
+            "${SAMPLES_GEN_DIR}/*.c")
+
     set(UC_INCLUDE  ${SRC_USE_CASE}/${use_case}/include)
 
     if (DEFINED ${use_case}_COMPILE_DEFS)
@@ -176,7 +181,8 @@ foreach(use_case ${USE_CASES})
     add_library(${UC_LIB_NAME} STATIC
         ${SRC_APPLICATION}
         ${UC_SRC}
-        ${SRC_GEN})
+        ${SRC_GEN}
+        ${SRC_SAMPLES})
 
     # Checking and setting the interactive mode
     if(INTERACTIVE_MODE)
@@ -186,7 +192,8 @@ foreach(use_case ${USE_CASES})
     target_include_directories(${UC_LIB_NAME} PUBLIC
         ${APPLICATION_INCLUDE_DIRS}
         ${UC_INCLUDE}
-        ${INC_GEN_DIR})
+        ${INC_GEN_DIR}
+        ${SAMPLES_GEN_DIR})
 
     # Set the activation buffer size
     target_compile_definitions(${UC_LIB_NAME} PUBLIC
@@ -220,12 +227,7 @@ foreach(use_case ${USE_CASES})
         endif()
     endforeach()
 
-    file(GLOB_RECURSE SRC_SAMPLES
-            "${SAMPLES_GEN_DIR}/*.cc"
-            "${SAMPLES_GEN_DIR}/*.cpp"
-            "${SAMPLES_GEN_DIR}/*.c")
-
-    add_executable(${TARGET_NAME} ${SRC_MAIN} ${SRC_SAMPLES})
+    add_executable(${TARGET_NAME} ${SRC_MAIN})
 
     target_link_libraries(${TARGET_NAME} PUBLIC ${UC_LIB_NAME})
 

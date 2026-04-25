@@ -61,4 +61,5 @@ generate_labels_code(
 # Generate input files
 generate_images_code("${${use_case}_FILE_PATH}"
                      ${SAMPLES_GEN_DIR}
+                     "${${use_case}_IMAGE_SIZE}"
                      "${${use_case}_IMAGE_SIZE}")
