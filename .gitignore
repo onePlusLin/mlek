@@ -5,6 +5,7 @@
 
 # Downloaded files
 resources_downloaded
+resources*/
 
 #Logs
 *.log
@@ -17,6 +18,11 @@ cmake-build-*/
 b_v*/
 b_y*/
 build*/
+b_*/
+pv32*/
+aMyWork/
+a_tflite/
+ model_fur/
 
 # Virtual environments
 scripts/py/env*

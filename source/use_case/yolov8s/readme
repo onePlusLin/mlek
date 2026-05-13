@@ -1,0 +1,5 @@
+/home/linzejia/app/mlek_lee/source/use_case/yolov8s/usecase.cmake
+
+/home/linzejia/app/mlek_lee/scripts/cmake/source_gen_utils.cmake
+
+/py/gen_img_cpp_yolo.py

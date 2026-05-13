@@ -66,6 +66,10 @@ namespace app {
 
 bool DetectorPostProcess::DoPostProcess()
 {
+    // /* Dump output tensor data added by zj*/
+    // this->DumpOutputTensor("output_tensor0.npy", this->m_outputTensor0,648 );
+    // this->DumpOutputTensor("output_tensor1.npy", this->m_outputTensor1,2592);
+
     /* Start postprocessing */
     int originalImageWidth  = m_postProcessParams.originalImageSize;
     int originalImageHeight = m_postProcessParams.originalImageSize;
@@ -222,6 +226,77 @@ void DetectorPostProcess::GetNetworkBoxes(
     if(num > net.topN)
         num -=1;
 }
+
+/**
+ * @brief       Dump output tensor data to file
+ * @param[in]   filename  Path to the output file.
+ * @param[in]   outputTensor Pointer to the TFLite Micro output Tensor.
+ * @param[in]   totalOutputSize Total output size.
+ * @return      true if successful, false otherwise.
+ * added by zj
+ **/
+bool DetectorPostProcess::DumpOutputTensor(const char* filename, TfLiteTensor* outputTensor,uint32_t totalOutputSize)
+        {
+            if (outputTensor == nullptr) {
+                info("Output tensor is null pointer.\n");
+                return false;
+            }
+
+            int8_t* tensor_buffer = tflite::GetTensorData<int8_t>(outputTensor);
+
+            // // 置为0
+            // for (size_t i = 0; i < totalOutputSize; ++i) {
+            //     tensor_buffer[i] = 0;
+            // }
+            std::string npy_filename = std::string(filename);
+            if (npy_filename.find(".npy") == std::string::npos) {
+                size_t dot_pos = npy_filename.rfind('.');
+                if (dot_pos != std::string::npos) {
+                    npy_filename = npy_filename.substr(0, dot_pos) + ".npy";
+                }
+                else {
+                    npy_filename = npy_filename + ".npy";
+                }
+            }
+
+            FILE* fp = fopen(npy_filename.c_str(), "wb");
+            if (fp == nullptr) {
+                info("Failed to open file %s for writing\n", npy_filename.c_str());
+                return false;
+            }
+
+            const char magic[] = "\x93NUMPY";
+            fwrite(magic, 1, 6, fp);
+
+            uint8_t major_version = 1;
+            uint8_t minor_version = 0;
+            fwrite(&major_version, 1, 1, fp);
+            fwrite(&minor_version, 1, 1, fp);
+
+            std::ostringstream header;
+            header << "{'descr': '<i1', 'fortran_order': False, 'shape': (" << totalOutputSize << ",), }";
+            std::string header_str = header.str();
+
+            size_t header_len = header_str.length();
+            size_t padding = (16 - (header_len + 1) % 16) % 16;
+            header_str.append(padding, ' ');
+            header_str.push_back('\n');
+
+            uint16_t header_len_le = static_cast<uint16_t>(header_str.length());
+            fwrite(&header_len_le, 2, 1, fp);
+            fwrite(header_str.c_str(), 1, header_str.length(), fp);
+
+            size_t written = fwrite(tensor_buffer, sizeof(int8_t), totalOutputSize, fp);
+            fclose(fp);
+
+            if (written != totalOutputSize) {
+                info("Failed to write complete data to file %s\n", npy_filename.c_str());
+                return false;
+            }
+
+            info("Successfully saved %" PRIu32 " int8_t values to npy file %s\n", totalOutputSize, npy_filename.c_str());
+            return true;
+        }
 
 } /* namespace app */
 } /* namespace arm */

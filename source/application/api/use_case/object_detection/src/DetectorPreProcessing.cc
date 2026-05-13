@@ -34,16 +34,19 @@ namespace app {
 
         auto input = static_cast<const uint8_t*>(data);
 
-        if (this->m_rgb2Gray) {
-            image::RgbToGrayscale(input, this->m_inputTensor->data.uint8, this->m_inputTensor->bytes);
-        } else {
-            std::memcpy(this->m_inputTensor->data.data, input, inputSize);
-        }
-        debug("Input tensor populated \n");
+        // if (this->m_rgb2Gray) {
+        //     image::RgbToGrayscale(input, this->m_inputTensor->data.uint8, this->m_inputTensor->bytes);
+        // } else {
+        //     std::memcpy(this->m_inputTensor->data.data, input, inputSize);
+        // }
+        // debug("Input tensor populated \n");
 
-        if (this->m_convertToInt8) {
-            image::ConvertImgToInt8(this->m_inputTensor->data.data, this->m_inputTensor->bytes);
-        }
+        std::memset(this->m_inputTensor->data.data, 0, this->m_inputTensor->bytes);
+        debug("Input tensor populated with zeros \n");
+
+        // if (this->m_convertToInt8) {
+        //     image::ConvertImgToInt8(this->m_inputTensor->data.data, this->m_inputTensor->bytes);
+        // }
 
         return true;
     }

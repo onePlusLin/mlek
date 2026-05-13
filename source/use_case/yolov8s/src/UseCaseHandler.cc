@@ -64,8 +64,8 @@ namespace arm {
             // 可以在这里实现一个是否输入变形
 
             TfLiteIntArray* outputShape = model.GetOutputShape(0);
-            // const uint32_t output_boxes_num = outputShape->data[2];     // 获取输出的8400 还是6300？后后续的降低分辨率
-            // const uint8_t output_classes_num = outputShape->data[1];    // 获取输出的84
+            const uint32_t output_num_boxes = outputShape->data[2];     // 获取输出的8400 还是6300？为后续的降低分辨率
+            const uint8_t output_num_classes = outputShape->data[1];    // 获取输出的84
 
 
             /* Set up pre and post-processing. */
@@ -76,7 +76,12 @@ namespace arm {
                 ImgClassPostProcess(outputTensor,
                     ctx.Get<Yolov8sClassifier&>("classifier"),
                     ctx.Get<std::vector<std::string>&>("labels"),
-                    results);
+                    results,
+                    output_num_boxes,
+                    output_num_classes,
+                    0.25f,
+                    0.7f,
+                    200);
 
             postProcess.SetModelInputShape(nCols, nRows);
 
@@ -119,18 +124,18 @@ namespace arm {
                 int img_id = 0;
                 const char* filename = get_sample_data_filename(frame_idx);
                 if (filename) {
-                    /* Extract numeric part from filename (e.g., "000000524280.bmp" -> "524280") */
+                    /* Extract numeric part from filename  */
                     char numeric_part[15];
                     int i = 0;
                     const char* ptr = filename;
-                    while (*ptr && *ptr != '.' && i < 14) { // Stop at the extension
+                    while (*ptr && *ptr != '.' && i < 14) {
                         if (*ptr >= '0' && *ptr <= '9') {
                             numeric_part[i++] = *ptr;
                         }
                         ptr++;
                     }
                     numeric_part[i] = '\0';
-                    img_id = atoi(numeric_part); // atoi automatically ignores leading zeros
+                    img_id = atoi(numeric_part);
                     info("Extracted image ID: %d from filename: %s\n", img_id, filename);
                 }
 
@@ -184,6 +189,14 @@ namespace arm {
                     return false;
                 }
                 info("inference done.\n");
+                std::string dump_name = std::to_string(img_id) + ".npy";
+                // if (!postProcess.DumpOutputTensor(dump_name.c_str()))
+                // {
+                //     printf_err("Dump output tensor failed.");
+                //     return false;
+                // }
+                // info("dump output tensor done.\n");
+
                 if (!postProcess.DoPostProcess()) {
                     printf_err("Post-processing failed."); // 是这里出现内存访问的问题！
                     return false;
@@ -204,7 +217,7 @@ namespace arm {
                 /* Add results to context for access outside handler. */
                 ctx.Set<std::vector<ClassificationResult>>("results", results);
 
-#if VERIFY_TEST_OUTPUT // how to open this function?
+#if VERIFY_TEST_OUTPUT 
                 arm::app::DumpTensor(outputTensor);
 #endif /* VERIFY_TEST_OUTPUT */
 

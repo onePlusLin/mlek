@@ -21,6 +21,7 @@
 #include "DetectionResult.hpp"
 #include "YoloFastestModel.hpp"
 #include "BaseProcessing.hpp"
+#include "log_macros.h" // info
 
 #include <forward_list>
 
@@ -113,6 +114,14 @@ namespace object_detection {
                              int imageHeight,
                              float threshold,
                              std::forward_list<image::Detection>& detections);
+        /**
+         * @brief       Dump output tensor data to file
+         * @param[in]   filename  Path to the output file.
+         * @param[in]   outputTensor Pointer to the TFLite Micro output Tensor.
+         * @param[in]   totalOutputSize Total output size.
+         * @return      true if successful, false otherwise.
+         **/
+        bool DumpOutputTensor(const char* filename, TfLiteTensor* outputTensor,uint32_t totalOutputSize);
     };
 
 } /* namespace app */

@@ -130,6 +130,7 @@ def write_hpp_file(
         .dump(str(cc_file_path))
 
 def resize_pad_rgb_image(
+        filename: str,
         original_image: Image.Image,
         image_size: typing.Sequence,
 ) -> np.ndarray:
@@ -146,24 +147,32 @@ def resize_pad_rgb_image(
     img_array = np.array(original_image) # NumPy Array: img.shape 返回 (H, W, C) （高, 宽, 通道数）
     shape = img_array.shape[:2]
     r = min(image_size[0] / shape[0], image_size[1] / shape[1])
-    new_unpad = round(shape[1] * r), round(shape[0] * r)    # 方便cv2.resize的宽高顺序是W, H
-    dw, dh = (image_size[1] - new_unpad[0]) / 2, (image_size[0] - new_unpad[1]) / 2  # wh pad (float类型）
+    new_unpad = round(shape[1] * r), round(shape[0] * r)                                # 方便cv2.resize的宽高顺序是W, H
+    dw, dh = (image_size[1] - new_unpad[0]) / 2, (image_size[0] - new_unpad[1]) / 2     # wh pad (float类型）
 
     img = original_image 
     if shape[::-1] != new_unpad: 
         img = original_image.resize(new_unpad, Image.Resampling.BILINEAR)
-        # img = cv2.resize(img, new_unpad, interpolation=cv2.INTER_LINEAR) # resize的时候是宽高顺序
+        # img = cv2.resize(img, new_unpad, interpolation=cv2.INTER_LINEAR)              # resize的时候是宽高顺序,pil也是
+    img.save(f"/home/linzejia/app/mlek_lee/aMyWork/{filename}_resized.jpg")
         
     top, bottom = round(dh - 0.1), round(dh + 0.1)
     left, right = round(dw - 0.1), round(dw + 0.1)
     img = ImageOps.expand(img, border=(int(left), int(top), int(right), int(bottom)), fill=(114, 114, 114))
     # img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=(114, 114, 114))
-    
+    # debug
+    # img.save(f"/home/linzejia/app/mlek_lee/aMyWork/{filename}_resized_padded.jpg")
+       
     # 图片流的数据只能是uint8 后续在图片预处理进行处理吧
     # 这里进行resize和pad
     img = np.ascontiguousarray(img)
+    img_array = np.array(img)
+    print(f"++ new image shape: {img_array.shape}") # new image shape: (640, 640, 3)
+    
     img_flat = np.array( img , dtype = np.uint8).flatten()
-    print(f"++ new image shape: {img_flat.shape},ratio: {r},pading: dw-- {dw}, dh-- {dh}")
+    np.save(f"/home/linzejia/app/mlek_lee/aMyWork/{filename}_compare.npy", img_flat)
+    # print(f"++ new image shape: {img_flat.shape},ratio: {r},pading: dw-- {dw}, dh-- {dh}")
+    
     
     return img_flat,r,dw,dh
     
@@ -240,8 +249,8 @@ def main(args):
         array_name = "im" + str(image_idx)
         image_array_names.append(array_name)
         
-        print(f"++ processing original image: {filename} with shape {original_image.size}") # PIL Image: img.size 返回 (W, H) （宽, 高）
-        rgb_data,r,dw,dh = resize_pad_rgb_image(original_image, args.image_size)
+        print(f"++ processing original image: {filename} with w h shape {original_image.size}") # PIL Image: img.size 返回 (W, H) （宽, 高）
+        rgb_data,r,dw,dh = resize_pad_rgb_image(filename,original_image, args.image_size)
         image_ratio.append(r)
         imgae_dw.append(dw)
         imgae_dh.append(dh)

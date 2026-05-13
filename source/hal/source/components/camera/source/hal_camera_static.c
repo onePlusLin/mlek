@@ -60,7 +60,7 @@ bool hal_camera_configure(const uint32_t width,
     const hal_cam_clr_format colour_format)
 {
     if (width != get_sample_img_width() || height != get_sample_img_height()) {
-        printf_err("Unsupported camera configuration %d %d %d %D\n", width, get_sample_img_width(), height, get_sample_img_height());
+        printf_err("Unsupported camera configuration %d %d %d %d\n", width, get_sample_img_width(), height, get_sample_img_height());
         return false;
     }
 
@@ -86,6 +86,9 @@ bool hal_camera_configure(const uint32_t width,
             break;
         case HAL_CAMERA_COLOUR_FORMAT_RGB565:
             dev.bytes_per_frame = width * height * 2;
+            break;
+        case HAL_CAMERA_COLOUR_FORMAT_GRAY8:
+            dev.bytes_per_frame = width * height * 1;
             break;
         default:
             printf_err("Unsupported colour format\n");
@@ -119,6 +122,7 @@ bool hal_camera_start(void)
 
 const uint8_t* hal_camera_get_captured_frame(uint32_t* size)
 {
+    info("Capturing frame...\n");
     static uint32_t idx = 0;
     const uint8_t* buffer = NULL;
     *size = 0;

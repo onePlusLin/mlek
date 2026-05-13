@@ -18,7 +18,7 @@
 # Append the API to use for this use case
 list(APPEND ${use_case}_API_LIST "yolov8s")
 
-set_input_file_path_user_option(".bmp" ${use_case})
+set_input_file_path_user_option(".jpg" ${use_case})
 
 # 定义图像的高度
 USER_OPTION(${use_case}_IMAGE_HEIGHT "Image height in pixels. Images will be resized to this height."

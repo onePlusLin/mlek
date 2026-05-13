@@ -20,7 +20,7 @@
 
 namespace arm {
 namespace app {
-namespace object_detection {
+namespace pv32_ob {
 
     /**
      * @brief   Class representing a single detection result.

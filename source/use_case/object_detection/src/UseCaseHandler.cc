@@ -106,7 +106,8 @@ namespace app {
             HAL_CAMERA_COLOUR_FORMAT_RGB888);
         if (!bCamera) {
             printf_err("Failed to configure camera.\n");
-            return false;
+            // return false;
+            return true;
         }
 
         while (true) {
@@ -169,9 +170,14 @@ namespace app {
             /* Draw boxes. */
             DrawDetectionBoxes(
                 results, dataPsnImgStartX, dataPsnImgStartY, dataPsnImgDownscaleFactor);
+            
+            TfLiteTensor* modelOutput0 = outputTensor0;
+            TfLiteTensor* modelOutput1 = outputTensor1;
 
 #if VERIFY_TEST_OUTPUT
+            info("Dumping model output tensors 0:\n");
             DumpTensor(modelOutput0);
+            info("Dumping model output tensors 1:\n");
             DumpTensor(modelOutput1);
 #endif /* VERIFY_TEST_OUTPUT */
 

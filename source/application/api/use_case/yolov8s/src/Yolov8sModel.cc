@@ -29,7 +29,7 @@ bool arm::app::Yolov8sModel::EnlistOperations()
     // this->m_opResolver.AddAveragePool2D();
     // this->m_opResolver.AddAdd();
     // this->m_opResolver.AddReshape();
-    // this->m_opResolver.AddSoftmax();
+    this->m_opResolver.AddTranspose();
 
     if (kTfLiteOk == this->m_opResolver.AddEthosU()) {
         info("Added %s support to op resolver\n",

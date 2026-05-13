@@ -19,6 +19,7 @@
 
 #include "BaseProcessing.hpp"
 #include "Classifier.hpp"
+#include "post_process.hpp"
 
 namespace arm {
     namespace app {
@@ -62,16 +63,26 @@ namespace arm {
             public:
             /**
              * @brief       Constructor
-             * @param[in]   outputTensor  Pointer to the TFLite Micro output Tensor.
-             * @param[in]   classifier    Classifier object used to get top N results from classification.
-             * @param[in]   labels        Vector of string labels to identify each output of the model.
-             * @param[in]   results       Vector of classification results to store decoded outputs.
+             * @param[in]   outputTensor       Pointer to the TFLite Micro output Tensor.
+             * @param[in]   classifier         Classifier object used to get top N results from classification.
+             * @param[in]   labels             Vector of string labels to identify each output of the model.
+             * @param[in]   results            Vector of classification results to store decoded outputs.
+             * @param[in]   output_num_boxes   Number of output boxes (e.g., 8400 or 6300).
+             * @param[in]   output_num_classes Number of output classes (e.g., 84).
+             * @param[in]   conf_thresh        Confidence threshold for detection.
+             * @param[in]   nms_thresh         NMS IoU threshold.
+             * @param[in]   max_candidates     Maximum number of candidate boxes.
              **/
             ImgClassPostProcess(
                 TfLiteTensor* outputTensor,
                 Classifier& classifier,
                 const std::vector<std::string>& labels,
-                std::vector<ClassificationResult>& results);
+                std::vector<ClassificationResult>& results,
+                uint32_t output_num_boxes = 8400,
+                uint8_t output_num_classes = 84,
+                float conf_thresh = 0.25f,
+                float nms_thresh = 0.7f,
+                int max_candidates = 200);
 
             /**
              * @brief       Should perform post-processing of the result of inference then
@@ -79,6 +90,13 @@ namespace arm {
              * @return      true if successful, false otherwise.
              **/
             bool DoPostProcess() override;
+
+            /**
+             * @brief       Dump output tensor data to file
+             * @param[in]   filename  Path to the output file
+             * @return      true if successful, false otherwise.
+             **/
+            bool DumpOutputTensor(const char* filename);
 
             /**
              * @brief       Set image ID
@@ -101,6 +119,9 @@ namespace arm {
             float m_pad_h = 0.0f;              // 图片预处理时候的高度填充值
             uint32_t m_input_w = 0;         // 模型输入的宽度
             uint32_t m_input_h = 0;         // 模型输入的高度
+            uint32_t m_output_num_boxes = 8400;    // 输出的框数量（如8400或6300）
+            uint8_t m_output_num_classes = 84;     // 输出的类别数（如84）
+            Yolov8sPostProcessor m_post_processor;  // YOLOv8s 后处理器
         };
 
     } /* namespace app */

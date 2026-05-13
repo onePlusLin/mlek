@@ -36,6 +36,7 @@ typedef enum hal_camera_mode_ {
 typedef enum hal_camera_colour_format_ {
     HAL_CAMERA_COLOUR_FORMAT_RGB888 = 0,
     HAL_CAMERA_COLOUR_FORMAT_RGB565,
+    HAL_CAMERA_COLOUR_FORMAT_GRAY8,
     HAL_CAMERA_COLOUR_FORMAT_INVALID
 } hal_cam_clr_format;
 
